@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  judge0-arm64:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: judge0-arm64:latest
+    container_name: judge0-arm64
+    restart: unless-stopped
+    ports:
+      - "2358:2358"
+    environment:
+      - PORT=2358
+      - HOST=0.0.0.0
+      - COUNT=8
+      - MEMORY_LIMIT=524288
+      - MAX_MEMORY_LIMIT=10485760
+      - CPU_TIME_LIMIT=2.0
+      - MAX_CPU_TIME_LIMIT=15.0
+      - WALL_TIME_LIMIT=5.0
+      - MAX_WALL_TIME_LIMIT=20.0
+    volumes:
+      - ./judge0.conf:/app/judge0.conf:ro
+      - sandbox_data:/tmp/judge0_sandbox
+    tmpfs:
+      - /tmp:exec,mode=777
+    deploy:
+      resources:
+        limits:
+          memory: 10G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2358/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  sandbox_data:
