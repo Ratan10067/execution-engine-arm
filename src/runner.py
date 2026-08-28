@@ -242,13 +242,17 @@ def execute_submission_sync(
             else:
                 final_status_id = STATUS_ACCEPTED
 
+        # Check if memory limit was exceeded
+        if memory_limit_kb and peak_memory > memory_limit_kb:
+            result_data["message"] = "Memory Limit Exceeded"
+
         result_data["status_id"] = final_status_id
         result_data["status"] = get_status_dict(final_status_id)
         result_data["stdout"] = stdout_output if stdout_output != "" else None
         result_data["stderr"] = stderr_output if stderr_output != "" else None
         result_data["exit_code"] = last_exec_res.exit_code
         result_data["exit_signal"] = last_exec_res.exit_signal
-        result_data["message"] = last_exec_res.message
+        result_data["message"] = result_data.get("message") or last_exec_res.message
         result_data["time"] = f"{avg_cpu:.3f}"
         result_data["wall_time"] = f"{avg_wall:.3f}"
         result_data["memory"] = peak_memory
