@@ -106,7 +106,7 @@ LANGUAGES_CATALOG: Dict[int, LanguageConfig] = {
         is_compiled=True,
         source_file="Main.java",
         compile_cmd="javac Main.java",
-        run_cmd="java -XX:+UseSerialGC -Xss64m -Xms16m Main",
+        run_cmd="java -XX:+UseSerialGC -Xss1m -Xms16m Main",
     ),
     # JavaScript (Node.js 12.14.0)
     63: LanguageConfig(
@@ -199,7 +199,7 @@ LANGUAGES_CATALOG: Dict[int, LanguageConfig] = {
         is_compiled=True,
         source_file="Main.kt",
         compile_cmd="kotlinc Main.kt -include-runtime -d Main.jar",
-        run_cmd="java -XX:+UseSerialGC -Xss64m -jar Main.jar",
+        run_cmd="java -XX:+UseSerialGC -Xss1m -jar Main.jar",
     ),
     # SQLite 3
     82: LanguageConfig(
