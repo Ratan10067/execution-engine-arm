@@ -71,15 +71,18 @@ def _set_limits(
     # 2. Memory Limit (KB -> Bytes)
     if memory_limit_kb and memory_limit_kb > 0:
         mem_bytes = memory_limit_kb * 1024
-        # On Linux, RLIMIT_AS restricts total virtual memory
-        if hasattr(resource, "RLIMIT_AS") and platform.system() != "Darwin":
-            try:
-                resource.setrlimit(resource.RLIMIT_AS, (mem_bytes, mem_bytes))
-            except Exception:
-                pass
         if hasattr(resource, "RLIMIT_DATA"):
             try:
                 resource.setrlimit(resource.RLIMIT_DATA, (mem_bytes, mem_bytes))
+            except Exception:
+                pass
+        # On Linux, modern runtimes (JVM OpenJDK, Node.js V8 4GB cage, Go runtime)
+        # require several gigabytes of virtual memory address space (mmap) reservation.
+        # We provide a sufficient virtual address window while monitoring peak physical RAM.
+        if hasattr(resource, "RLIMIT_AS") and platform.system() != "Darwin":
+            try:
+                as_bytes = max(mem_bytes, 8 * 1024 * 1024 * 1024)  # 8 GB virtual address headroom
+                resource.setrlimit(resource.RLIMIT_AS, (as_bytes, as_bytes))
             except Exception:
                 pass
 

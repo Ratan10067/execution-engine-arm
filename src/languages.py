@@ -99,14 +99,14 @@ LANGUAGES_CATALOG: Dict[int, LanguageConfig] = {
         compile_cmd="go build -o a.out main.go",
         run_cmd="./a.out",
     ),
-    # Java (OpenJDK 13.0.1)
+    # Java (OpenJDK 13.0.1 / 17)
     62: LanguageConfig(
         id=62,
         name="Java (OpenJDK 13.0.1)",
         is_compiled=True,
         source_file="Main.java",
         compile_cmd="javac Main.java",
-        run_cmd="java Main",
+        run_cmd="java -XX:+UseSerialGC -Xss64m -Xms16m Main",
     ),
     # JavaScript (Node.js 12.14.0)
     63: LanguageConfig(
@@ -114,7 +114,7 @@ LANGUAGES_CATALOG: Dict[int, LanguageConfig] = {
         name="JavaScript (Node.js 12.14.0)",
         is_compiled=False,
         source_file="main.js",
-        run_cmd="node main.js",
+        run_cmd="node --max-old-space-size=512 main.js",
     ),
     # Lua (5.3.5)
     64: LanguageConfig(
@@ -172,7 +172,7 @@ LANGUAGES_CATALOG: Dict[int, LanguageConfig] = {
         is_compiled=True,
         source_file="main.ts",
         compile_cmd="tsc main.ts",
-        run_cmd="node main.js",
+        run_cmd="node --max-old-space-size=512 main.js",
     ),
     # C (Clang 7.0.1)
     75: LanguageConfig(
@@ -199,7 +199,7 @@ LANGUAGES_CATALOG: Dict[int, LanguageConfig] = {
         is_compiled=True,
         source_file="Main.kt",
         compile_cmd="kotlinc Main.kt -include-runtime -d Main.jar",
-        run_cmd="java -jar Main.jar",
+        run_cmd="java -XX:+UseSerialGC -Xss64m -jar Main.jar",
     ),
     # SQLite 3
     82: LanguageConfig(
