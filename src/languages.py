@@ -51,7 +51,7 @@ LANGUAGES_CATALOG: Dict[int, LanguageConfig] = {
         name="C (GCC 9.2.0)",
         is_compiled=True,
         source_file="main.c",
-        compile_cmd="gcc -O3 -std=c17 main.c -o a.out -lm",
+        compile_cmd="gcc -O2 -std=c17 main.c -o a.out -lm",
         run_cmd="./a.out",
     ),
     # C# (Mono 6.6.0.161)
@@ -87,7 +87,7 @@ LANGUAGES_CATALOG: Dict[int, LanguageConfig] = {
         name="C++ (GCC 9.2.0)",
         is_compiled=True,
         source_file="main.cpp",
-        compile_cmd="g++ -O3 -std=c++20 main.cpp -o a.out -lm",
+        compile_cmd="g++ -O2 -std=c++20 main.cpp -o a.out -lm",
         run_cmd="./a.out",
     ),
     # Go (1.13.5)
@@ -180,7 +180,7 @@ LANGUAGES_CATALOG: Dict[int, LanguageConfig] = {
         name="C (Clang 7.0.1)",
         is_compiled=True,
         source_file="main.c",
-        compile_cmd="clang -O3 -std=c17 main.c -o a.out -lm",
+        compile_cmd="clang -O2 -std=c17 main.c -o a.out -lm",
         run_cmd="./a.out",
     ),
     # C++ (Clang 7.0.1)
@@ -189,7 +189,7 @@ LANGUAGES_CATALOG: Dict[int, LanguageConfig] = {
         name="C++ (Clang 7.0.1)",
         is_compiled=True,
         source_file="main.cpp",
-        compile_cmd="clang++ -O3 -std=c++20 main.cpp -o a.out -lm",
+        compile_cmd="clang++ -O2 -std=c++20 main.cpp -o a.out -lm",
         run_cmd="./a.out",
     ),
     # Kotlin (1.3.70)
