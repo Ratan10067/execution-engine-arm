@@ -78,9 +78,9 @@ class Settings:
         self.RAPIDAPI_KEY: Optional[str] = get_val("RAPIDAPI_KEY", None, str)
         self.RAPIDAPI_HOST: Optional[str] = get_val("RAPIDAPI_HOST", None, str)
 
-        # Memory limits (in KB) - default 1GB, max 20GB for ARM64 24GB RAM
+        # Memory limits (in KB) - default 1GB, max 16GB (safe 20GB container cap)
         self.MEMORY_LIMIT: int = get_val("MEMORY_LIMIT", 1048576, int)  # 1 GB default
-        self.MAX_MEMORY_LIMIT: int = get_val("MAX_MEMORY_LIMIT", 20971520, int)  # 20 GB max
+        self.MAX_MEMORY_LIMIT: int = get_val("MAX_MEMORY_LIMIT", 16777216, int)  # 16 GB max
 
         # CPU Time limits (in seconds)
         self.CPU_TIME_LIMIT: float = get_val("CPU_TIME_LIMIT", 2.0, float)

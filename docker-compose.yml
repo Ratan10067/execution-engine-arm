@@ -13,7 +13,7 @@ services:
       - HOST=0.0.0.0
       - COUNT=16
       - MEMORY_LIMIT=1048576
-      - MAX_MEMORY_LIMIT=20971520
+      - MAX_MEMORY_LIMIT=16777216
       - CPU_TIME_LIMIT=2.0
       - MAX_CPU_TIME_LIMIT=15.0
       - WALL_TIME_LIMIT=5.0
@@ -31,7 +31,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 22G
+          memory: 20G
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:2358/health"]
       interval: 10s
