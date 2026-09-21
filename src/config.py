@@ -78,9 +78,9 @@ class Settings:
         self.RAPIDAPI_KEY: Optional[str] = get_val("RAPIDAPI_KEY", None, str)
         self.RAPIDAPI_HOST: Optional[str] = get_val("RAPIDAPI_HOST", None, str)
 
-        # Memory limits (in KB) - default 512MB, max 10GB for ARM64 10GB RAM
-        self.MEMORY_LIMIT: int = get_val("MEMORY_LIMIT", 524288, int)  # 512 MB
-        self.MAX_MEMORY_LIMIT: int = get_val("MAX_MEMORY_LIMIT", 10485760, int)  # 10 GB
+        # Memory limits (in KB) - default 1GB, max 20GB for ARM64 24GB RAM
+        self.MEMORY_LIMIT: int = get_val("MEMORY_LIMIT", 1048576, int)  # 1 GB default
+        self.MAX_MEMORY_LIMIT: int = get_val("MAX_MEMORY_LIMIT", 20971520, int)  # 20 GB max
 
         # CPU Time limits (in seconds)
         self.CPU_TIME_LIMIT: float = get_val("CPU_TIME_LIMIT", 2.0, float)
@@ -94,11 +94,11 @@ class Settings:
 
         # Stack limit (in KB)
         self.STACK_LIMIT: int = get_val("STACK_LIMIT", 64000, int)
-        self.MAX_STACK_LIMIT: int = get_val("MAX_STACK_LIMIT", 256000, int)
+        self.MAX_STACK_LIMIT: int = get_val("MAX_STACK_LIMIT", 512000, int)
 
         # Process limit
-        self.MAX_PROCESSES_AND_OR_THREADS: int = get_val("MAX_PROCESSES_AND_OR_THREADS", 60, int)
-        self.MAX_MAX_PROCESSES_AND_OR_THREADS: int = get_val("MAX_MAX_PROCESSES_AND_OR_THREADS", 120, int)
+        self.MAX_PROCESSES_AND_OR_THREADS: int = get_val("MAX_PROCESSES_AND_OR_THREADS", 120, int)
+        self.MAX_MAX_PROCESSES_AND_OR_THREADS: int = get_val("MAX_MAX_PROCESSES_AND_OR_THREADS", 240, int)
 
         # Flags
         self.ENABLE_PER_PROCESS_AND_THREAD_TIME_LIMIT: bool = get_val("ENABLE_PER_PROCESS_AND_THREAD_TIME_LIMIT", False, bool)
@@ -108,15 +108,15 @@ class Settings:
 
         # File size limit (in KB)
         self.MAX_FILE_SIZE: int = get_val("MAX_FILE_SIZE", 10240, int)
-        self.MAX_MAX_FILE_SIZE: int = get_val("MAX_MAX_FILE_SIZE", 51200, int)
+        self.MAX_MAX_FILE_SIZE: int = get_val("MAX_MAX_FILE_SIZE", 102400, int)
 
         # Runs
         self.NUMBER_OF_RUNS: int = get_val("NUMBER_OF_RUNS", 1, int)
         self.MAX_NUMBER_OF_RUNS: int = get_val("MAX_NUMBER_OF_RUNS", 10, int)
 
-        # Worker count & Queue
-        self.COUNT: int = get_val("COUNT", 8, int)  # 8 worker threads for high concurrency
-        self.MAX_QUEUE_SIZE: int = get_val("MAX_QUEUE_SIZE", 1000, int)
+        # Worker count & Queue (Optimized for 4 OCPU / 8 vCPU Ampere A1)
+        self.COUNT: int = get_val("COUNT", 16, int)  # 16 high-concurrency workers
+        self.MAX_QUEUE_SIZE: int = get_val("MAX_QUEUE_SIZE", 5000, int)
         self.SUBMISSION_CACHE_DURATION: int = get_val("SUBMISSION_CACHE_DURATION", 3600, int)
 
         # Webhook / Callbacks

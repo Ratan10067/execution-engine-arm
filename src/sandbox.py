@@ -81,7 +81,7 @@ def _set_limits(
         # We provide a sufficient virtual address window while monitoring peak physical RAM.
         if hasattr(resource, "RLIMIT_AS") and platform.system() != "Darwin":
             try:
-                as_bytes = max(mem_bytes, 8 * 1024 * 1024 * 1024)  # 8 GB virtual address headroom
+                as_bytes = max(mem_bytes, 16 * 1024 * 1024 * 1024)  # 16 GB virtual address headroom
                 resource.setrlimit(resource.RLIMIT_AS, (as_bytes, as_bytes))
             except Exception:
                 pass

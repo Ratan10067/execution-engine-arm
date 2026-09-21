@@ -2,6 +2,7 @@ import os
 import time
 import asyncio
 import datetime
+from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, Any, Optional
 from src.config import settings
 from src.statuses import (
@@ -20,6 +21,7 @@ class QueueManager:
         self.queue: Optional[asyncio.Queue] = None
         self.workers: list[asyncio.Task] = []
         self.janitor_task: Optional[asyncio.Task] = None
+        self.executor: Optional[ThreadPoolExecutor] = None
         self.events: Dict[str, asyncio.Event] = {}
         self.active_workers_count: int = 0
         self.is_running: bool = False
@@ -29,6 +31,7 @@ class QueueManager:
         if self.is_running:
             return
         self.queue = asyncio.Queue(maxsize=settings.MAX_QUEUE_SIZE)
+        self.executor = ThreadPoolExecutor(max_workers=max(32, settings.COUNT * 2))
         self.events.clear()
         self.is_running = True
         for i in range(settings.COUNT):
@@ -38,7 +41,7 @@ class QueueManager:
         self.janitor_task = asyncio.create_task(self._janitor_loop())
 
     async def stop(self):
-        """Stop worker tasks and janitor."""
+        """Stop worker tasks, executor, and janitor."""
         self.is_running = False
         if self.janitor_task:
             self.janitor_task.cancel()
@@ -46,6 +49,9 @@ class QueueManager:
             task.cancel()
         await asyncio.gather(*self.workers, return_exceptions=True)
         self.workers.clear()
+        if self.executor:
+            self.executor.shutdown(wait=False, cancel_futures=True)
+            self.executor = None
 
     async def _janitor_loop(self):
         """Periodic background garbage collector for stale sandbox temp directories and cache."""
@@ -115,7 +121,7 @@ class QueueManager:
                 # Run submission in executor thread to prevent blocking asyncio loop
                 loop = asyncio.get_running_loop()
                 result = await loop.run_in_executor(
-                    None,
+                    self.executor,
                     execute_submission_sync,
                     token,
                     submission_data,
