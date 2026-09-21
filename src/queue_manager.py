@@ -1,8 +1,5 @@
-"""
-Asynchronous Worker Queue and Concurrency Manager.
-Manages concurrent execution workers, job queues, synchronous event notifications,
-and webhook dispatching.
-"""
+import os
+import time
 import asyncio
 import datetime
 from typing import Dict, Any, Optional
@@ -12,7 +9,7 @@ from src.statuses import (
     STATUS_PROCESSING,
     get_status_dict,
 )
-from src.runner import execute_submission_sync, send_callback
+from src.runner import execute_submission_sync, send_callback, safe_rmtree
 from src.storage import storage
 
 
@@ -22,12 +19,13 @@ class QueueManager:
     def __init__(self):
         self.queue: Optional[asyncio.Queue] = None
         self.workers: list[asyncio.Task] = []
+        self.janitor_task: Optional[asyncio.Task] = None
         self.events: Dict[str, asyncio.Event] = {}
         self.active_workers_count: int = 0
         self.is_running: bool = False
 
     async def start(self):
-        """Start async background workers."""
+        """Start async background workers and janitor."""
         if self.is_running:
             return
         self.queue = asyncio.Queue(maxsize=settings.MAX_QUEUE_SIZE)
@@ -36,15 +34,45 @@ class QueueManager:
         for i in range(settings.COUNT):
             worker_task = asyncio.create_task(self._worker_loop(i))
             self.workers.append(worker_task)
-
+        # Start background janitor to auto-clean stale sandbox folders
+        self.janitor_task = asyncio.create_task(self._janitor_loop())
 
     async def stop(self):
-        """Stop worker tasks."""
+        """Stop worker tasks and janitor."""
         self.is_running = False
+        if self.janitor_task:
+            self.janitor_task.cancel()
         for task in self.workers:
             task.cancel()
         await asyncio.gather(*self.workers, return_exceptions=True)
         self.workers.clear()
+
+    async def _janitor_loop(self):
+        """Periodic background garbage collector for stale sandbox temp directories and cache."""
+        while self.is_running:
+            try:
+                await asyncio.sleep(60)
+                # 1. Clean expired submission results from in-memory cache
+                storage._cleanup_expired()
+
+                # 2. Sweep sandbox directory for stale directories older than 3 minutes (180s)
+                sandbox_dir = settings.SANDBOX_BASE_DIR
+                if os.path.exists(sandbox_dir):
+                    now = time.time()
+                    try:
+                        for entry in os.scandir(sandbox_dir):
+                            try:
+                                if entry.is_dir() and (now - entry.stat().st_mtime > 180):
+                                    safe_rmtree(entry.path)
+                            except Exception:
+                                pass
+                    except Exception:
+                        pass
+            except asyncio.CancelledError:
+                break
+            except Exception as e:
+                print(f"Janitor error: {e}")
+
 
     async def submit_job(
         self,

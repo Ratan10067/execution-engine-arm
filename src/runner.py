@@ -26,6 +26,28 @@ from src.sandbox import run_sandboxed_command, ExecutionResult
 from src.compiler import compile_submission
 
 
+def safe_rmtree(path: str):
+    """Safely remove directory tree handling permission errors and read-only files."""
+    if not os.path.exists(path):
+        return
+    try:
+        for root, dirs, files in os.walk(path):
+            for d in dirs:
+                try:
+                    os.chmod(os.path.join(root, d), 0o777)
+                except Exception:
+                    pass
+            for f in files:
+                try:
+                    os.chmod(os.path.join(root, f), 0o777)
+                except Exception:
+                    pass
+        shutil.rmtree(path, ignore_errors=True)
+    except Exception:
+        pass
+
+
+
 def decode_base64_str(val: Optional[str]) -> Optional[str]:
     """Decodes a base64 string if non-empty, otherwise returns string as-is or None."""
     if not val:
@@ -151,7 +173,7 @@ def execute_submission_sync(
         result_data["status"] = get_status_dict(STATUS_INTERNAL_ERROR)
         result_data["message"] = f"Unsupported language ID {language_id}"
         result_data["finished_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
-        shutil.rmtree(work_dir, ignore_errors=True)
+        safe_rmtree(work_dir)
         return result_data
 
     try:
@@ -185,7 +207,7 @@ def execute_submission_sync(
             result_data["wall_time"] = f"{compile_res.cpu_time:.3f}"
             result_data["memory"] = compile_res.memory_kb
             result_data["finished_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
-            shutil.rmtree(work_dir, ignore_errors=True)
+            safe_rmtree(work_dir)
             return result_data
 
         # 4. Execution step
@@ -264,6 +286,6 @@ def execute_submission_sync(
         result_data["message"] = f"Internal Engine Error: {str(e)}"
         result_data["finished_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
     finally:
-        shutil.rmtree(work_dir, ignore_errors=True)
+        safe_rmtree(work_dir)
 
     return result_data
