@@ -1,6 +1,6 @@
 """
 Native Process Sandboxing & Resource Limit Enforcement Engine.
-Enforces CPU time, memory limits (up to 10 GB), stack limits, process counts,
+Enforces CPU time, memory limits (512MB default / up to 2GB), stack limits, process counts,
 and maps OS signals to Judge0 status codes.
 """
 import os

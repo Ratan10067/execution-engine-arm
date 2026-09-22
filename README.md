@@ -1,6 +1,6 @@
 # Native ARM64 / x86_64 High-Performance Judge0 Execution Engine
 
-A high-performance, 100% Judge0-API-compatible online code execution engine optimized for **ARM64 (Oracle Cloud Ampere A1)** and **x86_64** architectures with direct support for up to **10 GB RAM** sandboxed code submissions.
+A high-performance, 100% Judge0-API-compatible online code execution engine optimized for **ARM64 (Oracle Cloud Ampere A1)** and **x86_64** architectures. Pre-tuned for **12 GB Total RAM** host deployments co-hosting an **8 GB backend** (~3.5 GB safe container allocation).
 
 ---
 
@@ -8,8 +8,8 @@ A high-performance, 100% Judge0-API-compatible online code execution engine opti
 
 - **100% Judge0 REST API Compatibility**: Seamless drop-in replacement for all Judge0 client libraries, contest platforms, frontend code runners, and `nexus-brain`.
 - **Native ARM64 Execution**: Zero QEMU emulation overhead. Runs natively at full CPU clock speeds on Oracle Cloud Ampere A1.
-- **10 GB RAM Sandboxing**: Full memory scaling supporting data science, high-memory algorithms, and multi-gigabyte memory allocations.
-- **Asynchronous Worker Pipeline**: FastAPI + non-blocking async priority queue with configurable worker pools (4–16 concurrent workers).
+- **12 GB Host Profile (~3.5 GB Engine Budget)**: Tuned memory limits (512 MB default, 2 GB max per task) allowing smooth co-hosting alongside an 8 GB backend service.
+- **Asynchronous Worker Pipeline**: FastAPI + non-blocking async priority queue with balanced concurrency workers (6 workers).
 - **All 14 Official Status Codes**: In Queue (1), Processing (2), Accepted (3), Wrong Answer (4), Time Limit Exceeded (5), Compilation Error (6), Runtime Errors (7–12), Internal Error (13), Exec Format Error (14).
 - **Multi-Language Support**: Python 3, Python 2, C++ (GCC/Clang), C (GCC/Clang), Java (OpenJDK), JavaScript (Node.js), TypeScript, Go, Rust, Ruby, PHP, Bash, Swift, Kotlin, SQLite, and Multi-file programs.
 - **Base64 Encoding Protocol**: Complete support for `?base64_encoded=true` query parameters and encoded source code/stdin/stdout.
@@ -81,16 +81,16 @@ curl http://localhost:2358/health
 Tune parameters in `judge0.conf` or pass environment variables:
 
 ```ini
-# Memory Limits (in KB) - 10 GB Max
+# Memory Limits (in KB) - 12 GB Total RAM / 8 GB Backend Profile
 MEMORY_LIMIT=524288          # Default: 512 MB
-MAX_MEMORY_LIMIT=10485760    # Max: 10 GB
+MAX_MEMORY_LIMIT=2097152     # Max: 2 GB
 
 # CPU Time Limits (in seconds)
 CPU_TIME_LIMIT=2.0
 MAX_CPU_TIME_LIMIT=15.0
 
 # Concurrency
-COUNT=8                      # 8 worker threads
+COUNT=6                      # 6 balanced worker threads
 
 # Webhooks & Callbacks
 ENABLE_CALLBACKS=true

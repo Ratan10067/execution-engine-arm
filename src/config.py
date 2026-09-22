@@ -78,9 +78,9 @@ class Settings:
         self.RAPIDAPI_KEY: Optional[str] = get_val("RAPIDAPI_KEY", None, str)
         self.RAPIDAPI_HOST: Optional[str] = get_val("RAPIDAPI_HOST", None, str)
 
-        # Memory limits (in KB) - default 1GB, max 16GB (safe 20GB container cap)
-        self.MEMORY_LIMIT: int = get_val("MEMORY_LIMIT", 1048576, int)  # 1 GB default
-        self.MAX_MEMORY_LIMIT: int = get_val("MAX_MEMORY_LIMIT", 16777216, int)  # 16 GB max
+        # Memory limits (in KB) - default 512MB, max 2GB (Safe for 12GB host co-hosting 8GB backend)
+        self.MEMORY_LIMIT: int = get_val("MEMORY_LIMIT", 524288, int)  # 512 MB default
+        self.MAX_MEMORY_LIMIT: int = get_val("MAX_MEMORY_LIMIT", 2097152, int)  # 2 GB max
 
         # CPU Time limits (in seconds)
         self.CPU_TIME_LIMIT: float = get_val("CPU_TIME_LIMIT", 2.0, float)
@@ -94,7 +94,7 @@ class Settings:
 
         # Stack limit (in KB)
         self.STACK_LIMIT: int = get_val("STACK_LIMIT", 64000, int)
-        self.MAX_STACK_LIMIT: int = get_val("MAX_STACK_LIMIT", 512000, int)
+        self.MAX_STACK_LIMIT: int = get_val("MAX_STACK_LIMIT", 256000, int)
 
         # Process limit
         self.MAX_PROCESSES_AND_OR_THREADS: int = get_val("MAX_PROCESSES_AND_OR_THREADS", 120, int)
@@ -114,9 +114,9 @@ class Settings:
         self.NUMBER_OF_RUNS: int = get_val("NUMBER_OF_RUNS", 1, int)
         self.MAX_NUMBER_OF_RUNS: int = get_val("MAX_NUMBER_OF_RUNS", 10, int)
 
-        # Worker count & Queue (Optimized for 4 OCPU / 8 vCPU Ampere A1)
-        self.COUNT: int = get_val("COUNT", 16, int)  # 16 high-concurrency workers
-        self.MAX_QUEUE_SIZE: int = get_val("MAX_QUEUE_SIZE", 5000, int)
+        # Worker count & Queue (Optimized for 12GB Total RAM / 8GB Backend co-hosting)
+        self.COUNT: int = get_val("COUNT", 6, int)  # 6 balanced concurrency workers
+        self.MAX_QUEUE_SIZE: int = get_val("MAX_QUEUE_SIZE", 2000, int)
         self.SUBMISSION_CACHE_DURATION: int = get_val("SUBMISSION_CACHE_DURATION", 3600, int)
 
         # Webhook / Callbacks

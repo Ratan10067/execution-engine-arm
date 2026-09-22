@@ -43,7 +43,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Judge0 ARM64 Execution Engine",
-    description="High-performance, 100% Judge0-API-compatible online code execution engine optimized for ARM64 & x86_64 architectures with 10 GB RAM support.",
+    description="High-performance, 100% Judge0-API-compatible online code execution engine optimized for ARM64 & x86_64 architectures (12 GB RAM System Profile).",
     version=settings.VERSION,
     lifespan=lifespan,
 )

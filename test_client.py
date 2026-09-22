@@ -18,7 +18,9 @@ LANGUAGES = {
 }
 
 
-def test_language(server_url: str, lang_key: str):
+__test__ = False
+
+def run_language_test(server_url: str, lang_key: str):
     if lang_key not in LANGUAGES:
         print(f"Unknown language '{lang_key}'. Choose from: {', '.join(LANGUAGES.keys())}")
         return
@@ -95,10 +97,10 @@ def main():
     if not args or "all" in args:
         print(f"Running full language matrix test against {server_url} ...")
         for key in ["python", "c", "cpp", "js", "java", "bash"]:
-            test_language(server_url, key)
+            run_language_test(server_url, key)
     else:
         for key in args:
-            test_language(server_url, key.lower())
+            run_language_test(server_url, key.lower())
 
 
 if __name__ == "__main__":

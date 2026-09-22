@@ -4,7 +4,8 @@ set -e
 echo "=========================================================="
 echo " Starting Judge0 ARM64 / x86_64 High-Performance Engine"
 echo " Architecture: $(uname -m)"
-echo " Memory Limit: 10 GB Supported"
+echo " Profile:      12 GB Host (Co-hosted with 8 GB Backend)"
+echo " Engine Cap:   ~3.5 GB Safe Allocation | Workers: 6"
 echo "=========================================================="
 
 # Create sandbox temp dir

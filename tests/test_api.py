@@ -64,8 +64,8 @@ def test_system_and_config_info(client):
     res_conf = client.get("/config_info")
     assert res_conf.status_code == 200
     conf_data = res_conf.json()
-    assert conf_data["max_memory_limit"] >= 10485760
-    assert conf_data["count"] >= 8
+    assert conf_data["max_memory_limit"] >= 2097152
+    assert conf_data["count"] >= 6
 
 
 def test_about_version_license(client):
@@ -85,5 +85,5 @@ def test_workers_endpoint(client):
     assert res.status_code == 200
     workers = res.json()
     assert isinstance(workers, list)
-    assert workers[0]["available_workers"] >= 8
+    assert workers[0]["available_workers"] >= 6
 

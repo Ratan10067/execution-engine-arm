@@ -11,9 +11,9 @@ services:
     environment:
       - PORT=2358
       - HOST=0.0.0.0
-      - COUNT=16
-      - MEMORY_LIMIT=1048576
-      - MAX_MEMORY_LIMIT=16777216
+      - COUNT=6
+      - MEMORY_LIMIT=524288
+      - MAX_MEMORY_LIMIT=2097152
       - CPU_TIME_LIMIT=2.0
       - MAX_CPU_TIME_LIMIT=15.0
       - WALL_TIME_LIMIT=5.0
@@ -27,11 +27,13 @@ services:
       - ./judge0.conf:/app/judge0.conf:ro
       - sandbox_data:/tmp/judge0_sandbox
     tmpfs:
-      - /tmp:size=4G,exec,mode=777
+      - /tmp:size=1G,exec,mode=777
     deploy:
       resources:
         limits:
-          memory: 20G
+          memory: 3500M
+        reservations:
+          memory: 512M
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:2358/health"]
       interval: 10s
